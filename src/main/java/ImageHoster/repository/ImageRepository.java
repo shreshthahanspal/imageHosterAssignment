@@ -53,7 +53,9 @@ public class ImageRepository {
     public Image getImageByTitle(String title) {
         EntityManager em = emf.createEntityManager();
         try {
-            TypedQuery<Image> typedQuery = em.createQuery("SELECT i from Image i where i.title =:title", Image.class).setParameter("title", title);
+            TypedQuery<Image> typedQuery = em.createQuery("SELECT i from Image i where i.title =:title and i.id =:id", Image.class);
+            typedQuery.setParameter("title", title);
+//          typedQuery.setParameter("id",id);
             return typedQuery.getSingleResult();
         } catch (NoResultException nre) {
             return null;
@@ -69,6 +71,7 @@ public class ImageRepository {
         Image image = typedQuery.getSingleResult();
         return image;
     }
+
 
     //The method receives the Image object to be updated in the database
     //Creates an instance of EntityManager
