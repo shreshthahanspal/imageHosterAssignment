@@ -1,6 +1,8 @@
 package ImageHoster.repository;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -14,6 +16,8 @@ public class ImageRepository {
     @PersistenceUnit(unitName = "imageHoster")
     private EntityManagerFactory emf;
 
+    @Autowired
+    private CommentRepository commentRepository;
 
     //The method receives the Image object to be persisted in the database
     //Creates an instance of EntityManager
@@ -105,10 +109,17 @@ public class ImageRepository {
 
         try {
             transaction.begin();
+            /* To remove comments for image, @cascade is not working or am using it wrong **HELP** needed for @cascade*/
+            List<Comment> commentList =commentRepository.getComments(imageId);
+            for(Comment comment :commentList){
+                Comment com = em.find(Comment.class, comment.getId());
+                em.remove(com);
+            }
             Image image = em.find(Image.class, imageId);
             em.remove(image);
             transaction.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             transaction.rollback();
         }
     }

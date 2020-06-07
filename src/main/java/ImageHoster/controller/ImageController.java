@@ -3,6 +3,7 @@ package ImageHoster.controller;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class ImageController {
 
     @Autowired
     private TagService tagService;
-
+    @Autowired
+    private CommentService commentService;
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
     public String getUserImages(Model model) {
@@ -51,6 +53,7 @@ public class ImageController {
         Image image = imageService.getImageByTitle(title);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments",commentService.getComments(image.getId()));
         return "images/image";
     }
 
@@ -66,6 +69,7 @@ public class ImageController {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments",commentService.getComments(image.getId()));
         return "images/image";
     }
 
@@ -120,7 +124,7 @@ public class ImageController {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
             model.addAttribute("tags", image.getTags());
-//            return "redirect:/images/" + image.getTitle();
+            model.addAttribute("comments",commentService.getComments(image.getId()));
             return "/images/image";
         }
     }
@@ -182,6 +186,7 @@ public class ImageController {
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
             model.addAttribute("deleteError", error);
+            model.addAttribute("comments",commentService.getComments(image.getId()));
             return "images/image";
 
         }
