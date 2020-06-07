@@ -54,6 +54,9 @@
 
         <h5 class="f4 mb0 underline">Comments</h5>
         <!-- A form to upload a comment to a particular image-->
+        <!--              th:action="'/image/'+ ${image.id} + '/' + ${image.title} + '/comments'">-->
+<!--        th:action="@{/editImage(imageId=${image.id})}"-->
+<!--        <a th:href="@{/order/{id}/details(id=3,action='show_all')}">-->
         <form method="POST" enctype="multipart/form-data"
               th:action="'/image/'+ ${image.id} + '/' + ${image.title} + '/comments'">
             <fieldset id="sign_up" class="ba b&#45;&#45;transparent ph0 mh0">
