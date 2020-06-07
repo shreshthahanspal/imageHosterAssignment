@@ -15,7 +15,7 @@ public class Comment {
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    @Column(name ="created_date")
+    @Column(name = "created_date")
     private Date createdDate;
 
 
@@ -67,12 +67,14 @@ public class Comment {
     public void setImage(Image image) {
         this.image = image;
     }
-    public Comment(){
+
+    public Comment() {
     }
-    public Comment(String text,User user,Image image,Date date) {
-        this.text= text;
-        this.createdDate=date;
-        this.user=user;
-        this.image=image;
+
+    public Comment(String text, User user, Image image, Date date) {
+        this.text = text;
+        this.createdDate = date;
+        this.user = user;
+        this.image = image;
     }
 }

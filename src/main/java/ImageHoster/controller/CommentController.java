@@ -28,6 +28,7 @@ public class CommentController {
 
     /**
      * Method to create/ add comment on an image.
+     *
      * @param imageId
      * @param title
      * @param text
@@ -37,20 +38,19 @@ public class CommentController {
      * @throws IOException
      */
     @RequestMapping(value = "/image/{id}/{title}/comments", method = RequestMethod.POST)
-    public String createComment( @PathVariable("id") Integer imageId, @PathVariable("title") String title,
-                              @RequestParam("comment") String text, HttpSession session, Model model) throws IOException {
-        Image image =imageService.getImage(imageId);
+    public String createComment(@PathVariable("id") Integer imageId, @PathVariable("title") String title,
+                                @RequestParam("comment") String text, HttpSession session, Model model) throws IOException {
+        Image image = imageService.getImage(imageId);
         Comment comment = new Comment();
-        if(text==null || text.trim().length()==0){
-            return "redirect:/images/"+imageId+"/"+image.getTitle();
+        if (text == null || text.trim().length() == 0) {
+            return "redirect:/images/" + imageId + "/" + image.getTitle();
         }
-
         User user = (User) session.getAttribute("loggeduser");
         comment.setUser(user);
         comment.setText(text);
         comment.setImage(image);
         comment.setCreatedDate(new Date());
         commentService.addComment(comment);
-       return "redirect:/images";
+        return "redirect:/images";
     }
 }

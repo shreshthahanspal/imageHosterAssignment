@@ -25,7 +25,6 @@
             <property name="hibernate.type" value="trace"/>
 
 
-
         </properties>
 
     </persistence-unit>

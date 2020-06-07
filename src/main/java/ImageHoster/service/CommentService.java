@@ -13,11 +13,11 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     //The method calls the addComment() method in the Repository and passes the Comment to be persisted in the database
-    public void addComment(Comment comment){
-       commentRepository.addComment(comment);
+    public void addComment(Comment comment) {
+        commentRepository.addComment(comment);
     }
 
-    public List<Comment> getComments(Integer imageId){
+    public List<Comment> getComments(Integer imageId) {
         return commentRepository.getComments(imageId);
     }
 }

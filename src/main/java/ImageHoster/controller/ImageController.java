@@ -29,6 +29,7 @@ public class ImageController {
     private TagService tagService;
     @Autowired
     private CommentService commentService;
+
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
     public String getUserImages(Model model) {
@@ -53,12 +54,13 @@ public class ImageController {
         Image image = imageService.getImageByTitle(title);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
-        model.addAttribute("comments",commentService.getComments(image.getId()));
+        model.addAttribute("comments", commentService.getComments(image.getId()));
         return "images/image";
     }
 
     /**
      * to get image based on Id.
+     *
      * @param id
      * @param title
      * @param model
@@ -69,7 +71,7 @@ public class ImageController {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
-        model.addAttribute("comments",commentService.getComments(image.getId()));
+        model.addAttribute("comments", commentService.getComments(image.getId()));
         return "images/image";
     }
 
@@ -97,7 +99,6 @@ public class ImageController {
         newImage.setUser(user);
         String uploadedImageData = convertUploadedFileToBase64(file);
         newImage.setImageFile(uploadedImageData);
-
         List<Tag> imageTags = findOrCreateTags(tags);
         newImage.setTags(imageTags);
         newImage.setDate(new Date());
@@ -112,19 +113,19 @@ public class ImageController {
     //The method first needs to convert the list of all the tags to a string containing all the tags separated by a comma and then add this string in a Model type object
     //This string is then displayed by 'edit.html' file as previous tags of an image
     @RequestMapping(value = "/editImage")
-    public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
+    public String editImage(@RequestParam("imageId") Integer imageId, Model model, HttpSession session) {
         Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
         model.addAttribute("image", image);
-        if(image.getUser().getId().equals(user.getId())) {
+        if (image.getUser().getId().equals(user.getId())) {
             String tags = convertTagsToString(image.getTags());
             model.addAttribute("tags", tags);
             return "images/edit";
-        }else {
+        } else {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
             model.addAttribute("tags", image.getTags());
-            model.addAttribute("comments",commentService.getComments(image.getId()));
+            model.addAttribute("comments", commentService.getComments(image.getId()));
             return "/images/image";
         }
     }
@@ -141,27 +142,27 @@ public class ImageController {
     //The method also receives tags parameter which is a string of all the tags separated by a comma using the annotation @RequestParam
     //The method converts the string to a list of all the tags using findOrCreateTags() method and sets the tags attribute of an image as a list of all the tags
     @RequestMapping(value = "/editImage", method = RequestMethod.PUT)
-    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session,Model model) throws IOException {
+    public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session, Model model) throws IOException {
 
         Image image = imageService.getImage(imageId);
         String updatedImageData = convertUploadedFileToBase64(file);
         List<Tag> imageTags = findOrCreateTags(tags);
 
-            if (updatedImageData.isEmpty())
+        if (updatedImageData.isEmpty())
             updatedImage.setImageFile(image.getImageFile());
-            else {
-                updatedImage.setImageFile(updatedImageData);
-            }
+        else {
+            updatedImage.setImageFile(updatedImageData);
+        }
 
-            updatedImage.setId(imageId);
-            User user = (User) session.getAttribute("loggeduser");
-            updatedImage.setUser(user);
-            updatedImage.setTags(imageTags);
-            updatedImage.setDate(new Date());
+        updatedImage.setId(imageId);
+        User user = (User) session.getAttribute("loggeduser");
+        updatedImage.setUser(user);
+        updatedImage.setTags(imageTags);
+        updatedImage.setDate(new Date());
 
-            imageService.updateImage(updatedImage);
+        imageService.updateImage(updatedImage);
 
-        return "redirect:/images/" +updatedImage.getId()+ "/" + updatedImage.getTitle();
+        return "redirect:/images/" + updatedImage.getId() + "/" + updatedImage.getTitle();
     }
 
 
@@ -177,16 +178,15 @@ public class ImageController {
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, Model model, HttpSession session) {
         Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
-        if(image.getUser().getId().equals(user.getId())){
+        if (image.getUser().getId().equals(user.getId())) {
             imageService.deleteImage(imageId);
             return "redirect:/images";
-        }else
-        {
+        } else {
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
             model.addAttribute("deleteError", error);
-            model.addAttribute("comments",commentService.getComments(image.getId()));
+            model.addAttribute("comments", commentService.getComments(image.getId()));
             return "images/image";
 
         }
